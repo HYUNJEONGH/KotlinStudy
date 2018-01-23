@@ -29,9 +29,10 @@ enum class UserData(val index:Int){
     PicPath(4)
 }
 
-class UserListAdapter: CursorAdapter
+class UserListAdapter(context: Context, cursor: Cursor?): CursorAdapter(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER)
 {
-    constructor(context: Context, cursor: Cursor?):super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER)
+//    확장성, 사용성이 더 좋은 코드
+//    constructor(context: Context, cursor: Cursor?):super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER)
 
     val mContext = context
 
@@ -47,24 +48,23 @@ class UserListAdapter: CursorAdapter
         return mainView
     }
 
-    override fun bindView(convertView: View?, context: Context?, cursor: Cursor?) {
-        val holder = convertView?.tag as ViewHolder
+    override fun bindView(convertView: View, context: Context, cursor: Cursor) {
+        val holder = convertView.tag as ViewHolder
 
-        holder.name.text = String.format("%s (%d)", cursor?.getString(UserData.Name.index), cursor?.getInt(UserData.Age.index))
-        holder.tel.text = cursor?.getString(UserData.TelNum.index)
-        //todo
-        val picture:Drawable = getPicture(cursor?.getString(UserData.PicPath.index))?:context.getDrawable(android.R.drawable.ic_menu_gallery)
+        holder.name.text = String.format("%s (%d)", cursor.getString(UserData.Name.index), cursor.getInt(UserData.Age.index))
+        holder.tel.text = cursor.getString(UserData.TelNum.index)
+        val picture:Drawable = getPicture(cursor.getString(UserData.PicPath.index))?:context.getDrawable(android.R.drawable.ic_menu_gallery)
         holder.pic.background = picture
         //save cursor id
-        holder.del.tag = cursor?.getLong(UserData._id.index)
+        holder.del.tag = cursor.getLong(UserData._id.index)
     }
 
-    private fun getPicture(path:String?): Drawable?
+    private fun getPicture(path:String): Drawable?
     {
-        val img_id = path?.toLong()
+        val img_id = path.toLong()
         if(img_id == 0L) return null
 
-        val bitmap:Bitmap = MediaStore.Images.Thumbnails.getThumbnail(mContext.contentResolver, img_id, MediaStore.Images.Thumbnails.MICRO_KIND,null)
+        val bitmap:Bitmap? = MediaStore.Images.Thumbnails.getThumbnail(mContext.contentResolver, img_id, MediaStore.Images.Thumbnails.MICRO_KIND,null)
         bitmap?:return null
         return BitmapDrawable(mContext.resources, bitmap)
     }
