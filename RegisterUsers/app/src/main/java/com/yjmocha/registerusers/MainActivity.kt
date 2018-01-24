@@ -9,13 +9,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
-import com.yjmocha.registerusers.DB.DBHandler
 import com.yjmocha.registerusers.DB.DBHandler_Anko
 
 class MainActivity : AppCompatActivity() {
 
     private var mAdapter:UserListAdapter? = null
-    public var DBHandler:DBHandler_Anko = DBHandler_Anko(this)
+    public var mDBHandler:DBHandler_Anko = DBHandler_Anko(this)
     companion object {
         val REQUEST_ADD_USER = 1001
     }
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         var toolbar:Toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        val newItems:Cursor = DBHandler.getUserAllWithCursor()
+        val newItems:Cursor = mDBHandler.getUserAllWithCursor()
         if (newItems.count != 0) {
             mAdapter = UserListAdapter(this, newItems)
             val userList:ListView = findViewById(R.id.userList) as ListView
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         when(requestCode)
         {
             REQUEST_ADD_USER -> {
-                val newItems = DBHandler.getUserAllWithCursor()
+                val newItems = mDBHandler.getUserAllWithCursor()
                 if (mAdapter == null) {
                     mAdapter = UserListAdapter(this, newItems)
                     val userList:ListView = findViewById(R.id.userList) as ListView
@@ -53,15 +52,15 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickDelete(view: View)
     {
-        DBHandler.deleteUser(view.tag as Long)
-        val newItems = DBHandler.getUserAllWithCursor()
+        mDBHandler.deleteUser(view.tag as Long)
+        val newItems = mDBHandler.getUserAllWithCursor()
         mAdapter?.changeCursor(newItems)
 
     }
 
     override fun onDestroy() {
         mAdapter?.cursor?.close()
-        DBHandler.close()
+        mDBHandler.close()
         super.onDestroy()
     }
 
