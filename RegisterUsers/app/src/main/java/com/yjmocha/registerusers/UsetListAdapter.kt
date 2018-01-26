@@ -6,10 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.provider.MediaStore
+import android.support.constraint.ConstraintLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CursorAdapter
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 
@@ -19,7 +21,8 @@ import android.widget.TextView
 data class ViewHolder(val pic:ImageView,
                       val name:TextView,
                       val tel:TextView,
-                      val del:ImageView)
+                      val del:ImageButton,
+                      val clUserRow:ConstraintLayout)
 
 enum class UserData(val index:Int){
     _id(0),
@@ -33,7 +36,6 @@ class UserListAdapter(context: Context, cursor: Cursor?): CursorAdapter(context,
 {
 //    확장성, 사용성이 더 좋은 코드
 //    constructor(context: Context, cursor: Cursor?):super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER)
-
     val mContext = context
 
     override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View
@@ -43,7 +45,8 @@ class UserListAdapter(context: Context, cursor: Cursor?): CursorAdapter(context,
         var holder:ViewHolder = ViewHolder(mainView.findViewById(R.id.profile),
                 mainView.findViewById(R.id.name),
                 mainView.findViewById(R.id.tel_num),
-                mainView.findViewById(R.id.del_item))
+                mainView.findViewById(R.id.del_item),
+                mainView.findViewById(R.id.clUserRow))
         mainView.tag = holder
         return mainView
     }

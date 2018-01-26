@@ -57,8 +57,8 @@ class DBHandler_Anko(context: Context) : SQLiteOpenHelper(context, DB_Name, null
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.createTable(UserTable.NAME, true,
-                Pair(UserTable.ID, INTEGER+ PRIMARY_KEY),
+        db.createTable(UserTable.TABLE_NAME, true,
+                Pair(UserTable.ID, INTEGER + PRIMARY_KEY),
                 Pair(UserTable.NAME, TEXT),
                 Pair(UserTable.AGE, TEXT),
                 Pair(UserTable.TELNUM, TEXT),

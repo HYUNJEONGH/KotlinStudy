@@ -59,25 +59,26 @@ class SaveUserActivity():AppCompatActivity() {
             REQ_PERMISSION->{
                 var index:Int = 0
                 for(i in 0..permissions.size-1) {
-                    if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         val rationale = ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])
-                        if(!rationale) {
+                        if (!rationale) {
                             val dialogBuild = AlertDialog.Builder(this).setTitle("권한 설정")
                                     .setMessage("이미지 쌈네일을 만들기 위해서 저장권한이 필요합니다. 승인하지 않으면" +
                                             "이미지를 설정할 수 없습니다.")
                                     .setCancelable(true)
-                                    .setPositiveButton("설정하러 가기"){
-                                        dialog, whichButton -> showSetting()
+                                    .setPositiveButton("설정하러 가기") { dialog, whichButton ->
+                                        showSetting()
                                     }
                             dialogBuild.create().show();
+                            return
                         } else {
                             notGranted[index++] = permissions[i]
                         }
                     }
+                }
 
-                    if (notGranted.isNotEmpty()) {
-                        ActivityCompat.requestPermissions(this, notGranted, REQ_PERMISSION)
-                    }
+                if (notGranted.isNotEmpty()) {
+                    ActivityCompat.requestPermissions(this, notGranted, REQ_PERMISSION)
                 }
             }
         }

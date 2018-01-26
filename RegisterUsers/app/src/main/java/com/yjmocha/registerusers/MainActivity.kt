@@ -2,8 +2,8 @@ package com.yjmocha.registerusers
 
 import android.content.Intent
 import android.database.Cursor
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
@@ -11,10 +11,11 @@ import android.view.View
 import android.widget.ListView
 import com.yjmocha.registerusers.DB.DBHandler_Anko
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener{
 
     private var mAdapter:UserListAdapter? = null
-    public var mDBHandler:DBHandler_Anko = DBHandler_Anko(this)
+    var mDBHandler:DBHandler_Anko = DBHandler_Anko(this)
+
     companion object {
         val REQUEST_ADD_USER = 1001
     }
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         var toolbar:Toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         val newItems:Cursor = mDBHandler.getUserAllWithCursor()
-        if (newItems.count != 0) {
+        if (newItems?.count != 0) {
             mAdapter = UserListAdapter(this, newItems)
             val userList:ListView = findViewById(R.id.userList) as ListView
             userList.adapter = mAdapter
@@ -80,7 +81,16 @@ class MainActivity : AppCompatActivity() {
                 val intent:Intent = Intent(this, SaveUserActivity::class.java)
                 startActivityForResult(intent, REQUEST_ADD_USER)
             }
+            R.id.anko ->{
+                val intent:Intent = Intent(this, AnkoDSLActivity::class.java)
+                startActivity(intent)
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+//    TODO listItem에 onClick event 연결
+    override fun onClick(v: View?) {
+
     }
 }

@@ -17,5 +17,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SaveUserActivity"/>
+        <activity android:name=".AnkoDSLActivity"/>
     </application>
 </manifest>
