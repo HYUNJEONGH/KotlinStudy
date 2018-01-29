@@ -10,8 +10,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 import com.yjmocha.registerusers.DB.DBHandler_Anko
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_user_list_item.view.*
 
-class MainActivity : AppCompatActivity(), View.OnClickListener{
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mAdapter:UserListAdapter? = null
     var mDBHandler:DBHandler_Anko = DBHandler_Anko(this)
@@ -29,9 +31,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         val newItems:Cursor = mDBHandler.getUserAllWithCursor()
         if (newItems?.count != 0) {
             mAdapter = UserListAdapter(this, newItems)
+            mAdapter?.setOnItemClickListener(this)
             val userList:ListView = findViewById(R.id.userList) as ListView
             userList.adapter = mAdapter
         }
+    }
+
+    override fun onClick(p0: View?) {
+        val intent:Intent = Intent(this, SaveUserActivity::class.java)
+        intent.putExtra("id", userList.del_item.tag as Long)
+        startActivityForResult(intent, REQUEST_ADD_USER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -42,6 +51,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
                 val newItems = mDBHandler.getUserAllWithCursor()
                 if (mAdapter == null) {
                     mAdapter = UserListAdapter(this, newItems)
+                    mAdapter?.setOnItemClickListener(this)
                     val userList:ListView = findViewById(R.id.userList) as ListView
                     userList.adapter = mAdapter
                 }
@@ -89,8 +99,4 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         return super.onOptionsItemSelected(item)
     }
 
-//    TODO listItem에 onClick event 연결
-    override fun onClick(v: View?) {
-
-    }
 }

@@ -3,20 +3,22 @@ package com.yjmocha.registerusers
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import com.yjmocha.registerusers.DB.DBHandler_Anko
 import com.yjmocha.registerusers.DB.UserInfo
 import kotlinx.android.synthetic.main.activity_save_user.*
+import org.jetbrains.anko.image
 
 /**
  * Created by yunjeonghwang on 2018. 1. 24..
@@ -25,16 +27,35 @@ class SaveUserActivity():AppCompatActivity() {
     val mDBHandler = DBHandler_Anko(this)
     val REQ_PICK_IMAGE = 1010
     val REQ_PERMISSION = 1011
-
     var mSelectedImgId:Long = 0
+    var id:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_save_user)
+        id = intent.getLongExtra("id", 0)
+        if(id != 0L) {
+            var user:UserInfo = mDBHandler.getUserwithId(id)
+            etName.text = Editable.Factory.getInstance().newEditable(user.name)
+            etAge.text = Editable.Factory.getInstance().newEditable(user.age)
+            etTel.text = Editable.Factory.getInstance().newEditable(user.TelNum)
+            imageView.image = getPicture(user.pic_path)
+            btnAdd.visibility = View.GONE
+            btnEdit.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    private fun getPicture(path:String): Drawable?
+    {
+        val img_id = path.toLong()
+        if(img_id == 0L) return null
+        val bitmap:Bitmap? = MediaStore.Images.Thumbnails.getThumbnail(this.contentResolver, img_id, MediaStore.Images.Thumbnails.MICRO_KIND,null)
+        bitmap?:return null
+        return BitmapDrawable(this.resources, bitmap)
     }
 
     fun onClickImage(view: View?)
@@ -132,6 +153,17 @@ class SaveUserActivity():AppCompatActivity() {
         val user:UserInfo = UserInfo(etName.text.toString(), etAge.text.toString(),
                 etTel.text.toString(), mSelectedImgId.toString())
         mDBHandler.addUser(user)
+        mDBHandler.close()
+        finish()
+    }
+
+    fun onClickEditBtn(view: View)
+    {
+        //TODO image를 수정하지 않을경우
+        val user: UserInfo = UserInfo(etName.text.toString(), etAge.text.toString(),
+                    etTel.text.toString(), mSelectedImgId.toString())
+        if(id != 0L)
+            mDBHandler.editUser(user, id)
         mDBHandler.close()
         finish()
     }

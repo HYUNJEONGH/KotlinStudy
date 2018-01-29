@@ -30,6 +30,7 @@
             android:layout_marginTop="24dp"
             android:clickable="true"
             android:onClick="onClickImage"
+            android:background="@android:drawable/ic_menu_gallery"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_gallery" />
@@ -124,7 +125,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:onClick="onClickSaveBtn"
+            android:onClick="onClickEditBtn"
             android:text="수정"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"

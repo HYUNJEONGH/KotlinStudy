@@ -22,8 +22,7 @@ class DBHandler_Anko(context: Context) : SQLiteOpenHelper(context, DB_Name, null
         val DB_Version = 1
     }
 
-    object UserTable
-    {
+    object UserTable {
         val TABLE_NAME = "user"
         val ID = "_id"
         val NAME = "name"
@@ -37,8 +36,7 @@ class DBHandler_Anko(context: Context) : SQLiteOpenHelper(context, DB_Name, null
                 null, null, null, null, null)
     }
 
-    fun addUser(user: UserInfo)
-    {
+    fun addUser(user: UserInfo) {
         var info = ContentValues()
         info.put(UserTable.NAME, user.name)
         info.put(UserTable.AGE, user.age)
@@ -47,6 +45,24 @@ class DBHandler_Anko(context: Context) : SQLiteOpenHelper(context, DB_Name, null
         writableDatabase.use {
             writableDatabase.insert(UserTable.TABLE_NAME, null, info)
         }
+    }
+    fun editUser(user: UserInfo, id: Long) {
+        var info = ContentValues()
+        info.put(UserTable.NAME, user.name)
+        info.put(UserTable.AGE, user.age)
+        info.put(UserTable.TELNUM, user.TelNum)
+        info.put(UserTable.PIC_PATH, user.pic_path)
+        writableDatabase.use {
+            writableDatabase.update(UserTable.TABLE_NAME, info, UserTable.ID +"=?", arrayOf(id.toString()))
+        }
+    }
+
+    fun getUserwithId(id: Long): UserInfo {
+        val cursor = readableDatabase.query(UserTable.TABLE_NAME, arrayOf(UserTable.ID, UserTable.NAME, UserTable.AGE, UserTable.TELNUM, UserTable.PIC_PATH),
+                UserTable.ID + "=?", arrayOf(id.toString()), null, null, null)
+        cursor.moveToFirst()
+        return UserInfo(cursor.getString(1), cursor.getString(2),
+                cursor.getString(3), cursor.getString(4))
     }
 
     fun deleteUser(id:Long)
