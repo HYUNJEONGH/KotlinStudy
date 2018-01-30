@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/yunjeonghwang/NationInfo/app/src/main/assets"><file name="nation_data.json" path="/Users/yunjeonghwang/NationInfo/app/src/main/assets/nation_data.json"/></source><source path="/Users/yunjeonghwang/NationInfo/app/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/Users/yunjeonghwang/NationInfo/app/src/debug/assets"/></dataSet></merger>
