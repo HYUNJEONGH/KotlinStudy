@@ -44,13 +44,13 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
         {
             R.id.addCity -> {
                 val intent = Intent(this, SelectCityActivity::class.java)
-                startActivityForResult(intent, SELECTED_CITY)
+                startActivityForResult(intent, REQUEST_CITY)
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onLoadFinished(loader: Loader<ArrayList<WeatherForecast>>?, data: ArrayList<WeatherForecast>?) {
+    override fun onLoadFinished(loader: Loader<ArrayList<WeatherForecast>>?, data: ArrayList<WeatherForecast>) {
         adapter?:let{
             adapter = WeatherListViewAdapter(applicationContext, data)
             adapter?.setDeleteClickListener(){
