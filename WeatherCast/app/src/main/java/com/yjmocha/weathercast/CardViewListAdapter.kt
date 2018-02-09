@@ -25,14 +25,14 @@ class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val wind: TextView = itemView.findViewById(R.id.wind) as TextView
     val cityName: TextView = itemView.findViewById(R.id.detailDescript) as TextView
     val forecast: ForecastView = itemView.findViewById(R.id.forecast) as ForecastView
-    val delbtn: ImageButton = itemView.findViewWithTag(R.id.btnDel) as ImageButton
+    val delbtn: ImageButton = itemView.findViewById(R.id.btnDel) as ImageButton
 
     fun bindHolder(context: Context, data: WeatherForecast, delClick: View.OnClickListener?) {
         descript.text = data.current[0].description
         weatherIcon.loadUrl(data.iconUrl + data.current[0].icon + ".png")
-        currentTemp.text = String.format("%s \\u2103", data.current.main.temp)
+        currentTemp.text = String.format("%s \u2103", data.current.main.temp)
 
-        val format: String = "%s \\u2103 / %s \\u2103"
+        val format: String = "%s \u2103 / %s \u2103"
         highLowTemp.text = String.format(format, data.current.main.temp_min, data.current.main.temp_max)
         cityName.text = data.current.cityName
         cloudy.text = String.format("%s %%", data.current.clouds.all)
