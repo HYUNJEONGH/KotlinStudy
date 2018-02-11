@@ -9,10 +9,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.google.gson.Gson
 import com.yjmocha.weathercast.data.CityData
+import com.yjmocha.weathercast.data.DayData
 import com.yjmocha.weathercast.data.WeatherForecast
+import com.yjmocha.weathercast.data.WeekData
 import com.yjmocha.weathercast.db.DBHandlerAnko
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.InputStreamReader
+import java.net.URL
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayList<WeatherForecast>> {
 
@@ -86,6 +92,61 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<ArrayLis
                 mCityArray.clear();
                 mCityArray.addAll(mDb.getCityDataAll())
                 supportLoaderManager.restartLoader(LOADER_ID, null, this)
+            }
+        }
+    }
+
+//  연습문제 3:  thread()를 사용하여 AsyncTaskLoader 클래스를 대체할 수 있는 파일 작성
+    fun dataLoadWithThread() {
+        thread {
+            val API_KEY: String = "7f8bd5fe18c59a45df36783efd578a2b"
+            val Current_URL : String = "http://api.openweathermap.org/data/2.5/weather?id="
+            val Forcast_URL : String = "http://api.openweathermap.org/data/2.5/forecast?id="
+            val ICON_URL : String = "http://openweathermap.org/img/w/"
+            val cityWeather = ArrayList<WeatherForecast>()
+            mCityArray.forEach {
+                val cur_url = Current_URL+it._id+"&units=metric&APPID=$API_KEY"
+                val readData = URL(cur_url).readText()
+                val current: DayData = Gson().fromJson(readData, DayData::class.java)
+                current.cityName = it.name
+                current.apiId = it._id
+
+                val foreUrl = Forcast_URL+it._id+"&units=metric&APPID=$API_KEY"
+                val url = URL(foreUrl)
+                val inputStream = InputStreamReader(url.openStream())
+
+                val week: WeekData = Gson().fromJson(inputStream, WeekData::class.java)
+                val forecast: WeatherForecast = WeatherForecast(current, week, ICON_URL)
+                cityWeather.add(forecast)
+            }
+            runOnUiThread {
+                adapter?:let{
+                    adapter = WeatherListViewAdapter(applicationContext, cityWeather)
+                    adapter?.setDeleteClickListener(){
+                        view -> val db = DBHandlerAnko(applicationContext)
+                        db.deleteCity(view.tag as String)
+                        adapter?.removeData(view.tag as String)
+                    }
+                    weatherList.adapter = adapter
+                    weatherList.layoutManager = LinearLayoutManager(applicationContext)
+                }
+                mWeatherData?.addAll(cityWeather)
+                adapter?.updateData(cityWeather)
+                progressbar.visibility = View.GONE
+            }
+        }
+    }
+//    연습문제 4: java -> kotlin
+    interface NetworkResultCallback {
+        open fun onResultCallback(result: Int, data: ArrayList<String>)
+    }
+    class Test {
+        var mCallbak: NetworkResultCallback? = null
+        fun setNetworkResultCallbak(onResultCallback: (Int, ArrayList<String>)->Unit){
+            mCallbak = object : NetworkResultCallback {
+                override fun onResultCallback(result: Int, data: ArrayList<String>) {
+                    onResultCallback(result, data)
+                }
             }
         }
     }
