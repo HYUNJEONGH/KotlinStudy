@@ -1,0 +1,27 @@
+*.iml
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/captures
+.externalNativeBuild
+
+# Sandbox stuff
+_sandbox
+
+# Gradle cache
+.gradle
+
+# Local configuration file (sdk path, etc)
+/local.properties
+
+# generated files
+bin/
+gen/
+out/
+build/
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
